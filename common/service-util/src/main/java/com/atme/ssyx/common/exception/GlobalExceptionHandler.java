@@ -19,6 +19,6 @@ public class GlobalExceptionHandler {
     @ResponseBody
     public Result error(SsyxException e) {
         e.printStackTrace();
-        return Result.fail(null);
+        return Result.build(null,e.getCode(),e.getMessage());
     }
 }

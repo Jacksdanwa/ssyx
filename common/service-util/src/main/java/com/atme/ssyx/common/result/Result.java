@@ -15,6 +15,19 @@ public class Result<T> {
     private Result() {
     }
 
+    public static<T> Result<T> build(T data, Integer code, String message){
+        //创建结果返回类
+        Result<T> result = new Result<>();
+        if (data != null) {
+            //返回值不等于空的情况下，返回data的值
+            result.setData(data);
+        }
+        //设置返回的状态码
+        result.setCode(code);
+        result.setMessage(message);
+        return result;
+    }
+
     public static<T> Result<T> build(T data, ResultCodeEnum resultCodeEnum){
         //创建结果返回类
         Result<T> result = new Result<>();

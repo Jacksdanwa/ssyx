@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atme.ssyx.activity.mapper.CouponInfoMapper">
+
+    <resultMap id="CouponInfoMap" type="com.atme.ssyx.model.activity.CouponInfo" autoMapping="true"></resultMap>
+    <select id="selectCartCouponInfoList" resultMap="CouponInfoMap">
+        SELECT info.id,info.coupon_type,info.coupon_name,info.amount,info.condition_amount,
+               info.start_time,info.end_time,info.range_type,info.range_desc,info.publish_count,
+               info.per_limit,info.use_count,info.receive_count,info.expire_time,info.publish_status,
+               info.create_time,info.update_time,info.is_deleted,cuse.coupon_status
+        FROM coupon_use cuse
+        INNER JOIN coupon_info info ON cuse.coupon_id = info.id
+        <where>
+            AND cuse.user_id = #{userId}
+            AND info.expire_time >= NOW()
+        </where>
+        ORDER BY info.amount DESC
+    </select>
+
+    <select id="selectCouponInfoList" resultMap="CouponInfoMap">
+        --         使用范围[1->全场通用；2->指定商品；3->指定分类；]
+        SELECT info.id,info.coupon_type,info.coupon_name,info.amount,info.condition_amount,
+               info.start_time,info.end_time,info.range_type,info.range_desc,info.publish_count,
+               info.per_limit,info.use_count,info.receive_count,info.expire_time,info.publish_status,
+               info.create_time,info.update_time,info.is_deleted,cuse.coupon_status
+        FROM coupon_info info
+        LEFT JOIN coupon_range crange ON info.id = crange.coupon_id
+        LEFT JOIN coupon_use cuse ON info.id = cuse.coupon_id AND cuse.user_id = #{userId}
+        WHERE (
+            info.range_type = 1
+                OR (info.range_type = 2 AND crange.range_id = #{skuId})
+                OR (info.range_type = 3 AND crange.range_id = #{categoryId})
+            )
+          AND NOW() BETWEEN info.start_time AND info.end_time
+        ORDER BY info.amount DESC
+    </select>
+</mapper>

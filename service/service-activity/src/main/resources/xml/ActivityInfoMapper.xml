@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atme.ssyx.activity.mapper.ActivityInfoMapper">
+
+    <!--自定义返回结果-->
+    <resultMap id="ActivityRuleMap" type="com.atme.ssyx.model.activity.ActivityRule" autoMapping="true"></resultMap>
+    <select id="findActivityRule" resultMap="ActivityRuleMap">
+        select info.activity_type as activityType,
+               rule.id,rule.activity_id,rule.condition_amount,rule.condition_num,rule.benefit_amount,rule.benefit_discount
+        from activity_info info
+                 inner join activity_rule rule on info.id = rule.activity_id
+                 inner join activity_sku sku on info.id = sku.activity_id
+        where sku.sku_id = #{skuId}
+        and NOW() between info.start_time and info.end_time
+        order by rule.condition_amount desc
+    </select>
+    
+    <select id="selectIdList" resultType="Long">
+        select sku.sku_id
+        from activity_info info
+        inner join activity_sku sku on info.id = sku.activity_id
+
+        <where>
+            <if test="skuIdList != null">
+                and sku.sku_id in
+                <foreach collection="skuIdList" item="item" index="index" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+        </where>
+        and now() between info.start_time and info.end_time
+    </select>
+
+    <select id="selectCartActivitiy" resultMap="ActivityRuleMap">
+        SELECT info.id    as activityId,
+               sku.sku_id as skuId
+        FROM activity_info info
+        INNER JOIN activity_sku sku ON info.id = sku.activity_id
+        <where>
+            sku.sku_id IN
+            <foreach collection="skuIdList" item="item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+        </where>
+          AND NOW() BETWEEN info.start_time AND info.end_time
+
+    </select>
+
+</mapper>

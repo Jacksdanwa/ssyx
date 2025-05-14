@@ -10,6 +10,19 @@
     </parent>
 
     <artifactId>service</artifactId>
+    <packaging>pom</packaging>
+    <modules>
+        <module>service-acl</module>
+        <module>service-sys</module>
+        <module>service-product</module>
+        <module>service-search</module>
+        <module>service-activity</module>
+        <module>service-user</module>
+        <module>service-hom</module>
+        <module>service-cart</module>
+        <module>service-order</module>
+        <module>service-payment</module>
+    </modules>
 
     <dependencies>
         <!--依赖服务的工具类-->
@@ -43,13 +56,13 @@
             <artifactId>mysql-connector-java</artifactId>
         </dependency>
 
-        <!-- 服务注册 -->
+        <!-- 服务注册-->
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
         </dependency>
 
-        <!-- 服务调用feign -->
+         <!--服务调用feign -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-openfeign</artifactId>
